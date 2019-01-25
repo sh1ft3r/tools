@@ -1,6 +1,5 @@
 ############# version: v0.11 ##################
 ############# Author: Kerim ##################
-
 #!/usr/bin/env python
 
 import string
