@@ -81,16 +81,16 @@ def perform_pentest(target):
     ssh_audit_output = f"{log_dir}/{target}_ssh_audit.txt"
     ssh_audit_command = f"ssh-audit {target} > {ssh_audit_output}"
     subprocess.run(ssh_audit_command, shell=True)
+
+    # testssl
+    testssl_output = f"{log_dir}/{target}_testssl.txt"
+    testssl_command = f"testssl {target} > {testssl_output}"
+    subprocess.run(testssl_command, shell=True)
     
     # ike-scan
     ike_scan_output = f"{log_dir}/{target}_ike_scan.txt"
     ike_scan_command = f"ike-scan {target} > {ike_scan_output}"
     subprocess.run(ike_scan_command, shell=True)
-    
-    # webapp scan
-    webapp_scan_output = f"{log_dir}/{target}_webapp_scan.txt"
-    webapp_scan_command = f"webapp-scan {target} > {webapp_scan_output}"
-    subprocess.run(webapp_scan_command, shell=True)
     
     # vulnerability scan with attacks
     vulnerability_scan_output = f"{log_dir}/{target}_vulnerability_scan.txt"
