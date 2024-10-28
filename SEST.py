@@ -99,27 +99,52 @@ def perform_pentest(target):
     
     print(f"Pentest completed for {target}")
 
+def read_targets_from_file(filename):
+  """
+  Reads a list of domain names from a file.
+  """
+  targets = []
+  try:
+    with open(filename, 'r') as f:
+      for line in f:
+        target = line.strip()
+        if target:
+          targets.append(target)
+  except FileNotFoundError:
+    print(f"Error: File '{filename}' not found.")
+  return targets
+
 def main():
-    """
-    Main function to ask for the scope and perform pentests.
-    """
+  """
+  Main function to ask for the scope or read from a file and perform pentests.
+  """
+  # Choice between manual input or file input
+  choice = input("Enter 'f' to use a file or 'm' for manual input (f/m): ")
+
+  if choice.lower() == 'f':
+    filename = input("Enter the filename containing targets: ")
+    targets = read_targets_from_file(filename)
+  elif choice.lower() == 'm':
     # Ask for the scope of the pentest
     scope = input("Enter the scope (comma-separated list of targets): ")
-    
+
     # Validate the input
     if not scope:
-        print("Error: No scope provided.")
-        return
-    
+      print("Error: No scope provided.")
+      return
+
     # Split the targets and remove any leading/trailing whitespace
     targets = [target.strip() for target in scope.split(",")]
-    
-    # Perform pentest on each target
-    for target in targets:
-        if target:
-            perform_pentest(target)
-        else:
-            print("Warning: Empty target found. Skipping...")
+  else:
+    print("Invalid choice. Please enter 'f' or 'm'.")
+    return
+
+  # Perform pentest on each target
+  for target in targets:
+    if target:
+      perform_pentest(target)
+    else:
+      print("Warning: Empty target found. Skipping...")
 
 if __name__ == "__main__":
-    main()
+  main()
