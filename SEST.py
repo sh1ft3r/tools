@@ -118,22 +118,27 @@ def main():
   """
   Main function to ask for the scope or read from a file and perform pentests.
   """
-  choice = input("Do you want to use a file for targets? (y/n): ")
+  while True:
+    choice = input("Do you want to use a file for targets? (y/n): ")
 
-  if choice.lower() == 'y':
-    filename = input("Enter the filename containing targets: ")
-    targets = read_targets_from_file(filename)
-  else:
-    # Ask for the scope of the pentest
-    scope = input("Enter the scope (comma-separated list of targets): ")
+    if choice.lower() == 'y':
+      filename = input("Enter the filename containing targets: ")
+      targets = read_targets_from_file(filename)
+      break
+    elif choice.lower() == 'n':
+      # Ask for the scope of the pentest
+      scope = input("Enter the scope (comma-separated list of targets): ")
 
-    # Validate the input
-    if not scope:
-      print("Error: No scope provided.")
-      return
+      # Validate the input
+      if not scope:
+        print("Error: No scope provided.")
+        continue
 
-    # Split the targets and remove any leading/trailing whitespace
-    targets = [target.strip() for target in scope.split(",")]
+      # Split the targets and remove any leading/trailing whitespace
+      targets = [target.strip() for target in scope.split(",")]
+      break
+    else:
+      print("Invalid input. Please enter 'y' or 'n'.")
 
   # Perform pentest on each target
   for target in targets:
