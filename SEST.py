@@ -118,13 +118,12 @@ def main():
   """
   Main function to ask for the scope or read from a file and perform pentests.
   """
-  # Choice between manual input or file input
-  choice = input("Enter 'f' to use a file or 'm' for manual input (f/m): ")
+  choice = input("Do you want to use a file for targets? (y/n): ")
 
-  if choice.lower() == 'f':
+  if choice.lower() == 'y':
     filename = input("Enter the filename containing targets: ")
     targets = read_targets_from_file(filename)
-  elif choice.lower() == 'm':
+  else:
     # Ask for the scope of the pentest
     scope = input("Enter the scope (comma-separated list of targets): ")
 
@@ -135,9 +134,6 @@ def main():
 
     # Split the targets and remove any leading/trailing whitespace
     targets = [target.strip() for target in scope.split(",")]
-  else:
-    print("Invalid choice. Please enter 'f' or 'm'.")
-    return
 
   # Perform pentest on each target
   for target in targets:
