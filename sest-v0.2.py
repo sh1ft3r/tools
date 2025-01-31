@@ -18,11 +18,6 @@ def perform_pentest(target):
     sublist3r_command = f"sublist3r -d {target} -o {sublist3r_output}"
     subprocess.run(sublist3r_command, shell=True)
     
-    # Subdomain takeover
-    nuclei_takeover_output = f"{log_dir}/{target}_nuclei_takeover.txt"
-    nuclei_takeover_command = f"nuclei -t takeovers/ -u {target} -o {nuclei_takeover_output}"
-    subprocess.run(nuclei_takeover_command, shell=True)
-    
     # Port scanning
     nmap_output = f"{log_dir}/{target}_nmap.txt"
     nmap_command = f"nmap -sV -sC -oA {nmap_output} {target}"
@@ -33,30 +28,15 @@ def perform_pentest(target):
     gobuster_command = f"gobuster dir -u {target} -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -o {gobuster_output}"
     subprocess.run(gobuster_command, shell=True)
     
-    # Web vulnerability scanning
-    nuclei_vulnerability_output = f"{log_dir}/{target}_nuclei_vulnerability.txt"
-    nuclei_vulnerability_command = f"nuclei -t vulnerabilities/ -u {target} -o {nuclei_vulnerability_output}"
-    subprocess.run(nuclei_vulnerability_command, shell=True)
-    
-    # Web application scanning
-    nuclei_webapp_output = f"{log_dir}/{target}_nuclei_webapp.txt"
-    nuclei_webapp_command = f"nuclei -t web-application/ -u {target} -o {nuclei_webapp_output}"
-    subprocess.run(nuclei_webapp_command, shell=True)
-    
     # Attack tools
     hydra_output = f"{log_dir}/{target}_hydra.txt"
-    hydra_command = f"hydra -L /usr/share/wordlists/rockyou.txt -P /usr/share/wordlists/rockyou.txt {target} http-post-form '/login:username=^USER^&password=^PASS^:F=incorrect'"
+    hydra_command = f"hydra -L /usr/share/wordlists/rockyou.txt -P /usr/share/wordlists/rockyou.txt.gz {target} http-post-form '/login:username=^USER^&password=^PASS^:F=incorrect'"
     subprocess.run(hydra_command, shell=True)
     
     # Metasploit
     metasploit_output = f"{log_dir}/{target}_metasploit.txt"
     metasploit_command = f"msfconsole -q -x 'use auxiliary/scanner/http/http_version; set RHOSTS {target}; run; exit' > {metasploit_output}"
     subprocess.run(metasploit_command, shell=True)
-    
-    # Eyewitness
-    eyewitness_output = f"{log_dir}/{target}_eyewitness"
-    eyewitness_command = f"eyewitness --web -d {target} -o {eyewitness_output}"
-    subprocess.run(eyewitness_command, shell=True)
     
     # Amass scan
     amass_output = f"{log_dir}/{target}_amass.txt"
@@ -93,6 +73,11 @@ def perform_pentest(target):
     vulnerability_scan_command = f"nuclei -u {target} -o {vulnerability_scan_output}"
     subprocess.run(vulnerability_scan_command, shell=True)
     
+        # Eyewitness
+    eyewitness_output = f"{log_dir}/{target}_eyewitness"
+    eyewitness_command = f"eyewitness --web -d {target} -o {eyewitness_output}"
+    subprocess.run(eyewitness_command, shell=True)
+    
     print(f"Pentest completed for {target}")
 
 def analyze_vulnerabilities(log_dir):
@@ -107,12 +92,6 @@ def analyze_vulnerabilities(log_dir):
             subdomain = line.strip()
             vulnerabilities.append(f"Subdomain: {subdomain}")
 
-    # Analyze nuclei_takeover output
-    with open(f"{log_dir}/nuclei_takeover.txt", "r") as f:
-        for line in f:
-            if "takeover" in line:
-                vulnerabilities.append(f"Subdomain takeover: {line.strip()}")
-
     # Analyze nmap output
     with open(f"{log_dir}/nmap.txt", "r") as f:
         for line in f:
@@ -125,15 +104,6 @@ def analyze_vulnerabilities(log_dir):
             if "Status" in line and "Size" in line:
                 vulnerabilities.append(f"Gobuster directory: {line.strip()}")
 
-    # Analyze nuclei_vulnerability output
-    with open(f"{log_dir}/nuclei_vulnerability.txt", "r") as f:
-        for line in f:
-            vulnerabilities.append(f"Nuclei vulnerability: {line.strip()}")
-
-    # Analyze nuclei_webapp output
-    with open(f"{log_dir}/nuclei_webapp.txt", "r") as f:
-        for line in f:
-            vulnerabilities.append(f"Nuclei web application vulnerability: {line.strip()}")
 
     # Analyze hydra output
     with open(f"{log_dir}/hydra.txt", "r") as f:
